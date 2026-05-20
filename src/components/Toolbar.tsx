@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
-import { Download, FileUp, Moon, Sun, Maximize, Minimize, Trash2, Copy } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Download, FileUp, Moon, Sun, Maximize, Minimize, Trash2, Copy, Layers } from 'lucide-react';
 import { exportPDF } from '../utils/exportPDF';
+import BatchConverter from './BatchConverter';
 
 interface ToolbarProps {
   theme: 'light' | 'dark';
@@ -25,6 +26,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   clearEditor,
   copyToClipboard
 }) => {
+  const [showBatchConverter, setShowBatchConverter] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +83,15 @@ const Toolbar: React.FC<ToolbarProps> = ({
         </button>
 
         <button 
+          onClick={() => setShowBatchConverter(true)}
+          className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
+          title="Convert Multiple Files"
+        >
+          <Layers size={16} />
+          <span className="hidden sm:inline">Batch Convert</span>
+        </button>
+
+        <button 
           onClick={handleExport}
           disabled={isExporting}
           className={`flex items-center space-x-1 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors ${isExporting ? 'opacity-75 cursor-not-allowed' : ''}`}
@@ -109,6 +120,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
           {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
         </button>
       </div>
+
+      {showBatchConverter && (
+        <BatchConverter onClose={() => setShowBatchConverter(false)} />
+      )}
     </header>
   );
 };
